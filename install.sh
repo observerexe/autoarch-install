@@ -203,7 +203,7 @@ done
 
 echo "[*] GPU драйвери..."
 while true; do
-    arch-chroot /mnt /bin/bash -c "pacman -S --noconfirm nvidia-open-dkms nvidia-utils lib32-nvidia-utils vulkan-icd-loader lib32-vulkan-icd-loader nvidia-prime intel-media-driver lib32-intel-media-driver mesa lib32-mesa vulkan-intel lib32-vulkan-intel" && break
+    arch-chroot /mnt /bin/bash -c "pacman -S --noconfirm nvidia-open-dkms nvidia-utils lib32-nvidia-utils vulkan-icd-loader lib32-vulkan-icd-loader nvidia-prime intel-media-driver mesa lib32-mesa vulkan-intel lib32-vulkan-intel" && break
     echo "[!] Повтор GPU drivers через 5с..."
     sleep 5
 done
