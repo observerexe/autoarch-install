@@ -175,17 +175,15 @@ find_efi() {
 clean_old_partitions() {
     local HAS_OLD=0
     for num in 5 6; do
-        local PART_INFO
-        if ! PART_INFO=$(sgdisk -i "$num" "$DISK" 2>/dev/null); then
-            continue  # Розділ не існує — пропускаємо
-        fi
-        local GUID
-        GUID=$(echo "$PART_INFO" | grep "Partition GUID code:" | awk '{print $4}')
-        if [[ "$GUID" == "0FC63DAF-8483-4772-8E79-3D69D8477DE4" || "$GUID" == "0657FD6D-A4AB-43C4-84E5-0933C84B4F4F" ]]; then
-            warn "Знайдено старий Linux-розділ ${DISK}p${num}"
-            HAS_OLD=1
-        elif [[ -n "$GUID" ]]; then
-            err "Розділ ${DISK}p${num} існує, але має невідомий тип ($GUID). Видали його вручну."
+        if sgdisk -i "$num" "$DISK" >/dev/null 2>&1; then
+            local GUID
+            GUID=$(sgdisk -i "$num" "$DISK" | grep "Partition GUID code:" | awk '{print $4}')
+            if [[ "$GUID" == "0FC63DAF-8483-4772-8E79-3D69D8477DE4" || "$GUID" == "0657FD6D-A4AB-43C4-84E5-0933C84B4F4F" ]]; then
+                warn "Знайдено старий Linux-розділ ${DISK}p${num}"
+                HAS_OLD=1
+            else
+                err "Розділ ${DISK}p${num} існує, але має невідомий тип ($GUID). Видали його вручну."
+            fi
         fi
     done
     
